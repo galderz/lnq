@@ -1,7 +1,6 @@
 package org.mendrugo.lnq.bitcoin;
 
-public class BlockchainInfo
-{
-    int blocks;
-    String bestblockhash;
-}
+public record BlockchainInfo(
+    int blocks
+    , String bestblockhash
+) {}
