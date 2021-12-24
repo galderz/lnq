@@ -1,13 +1,13 @@
 package org.acme.getting.started.commandmode;
 
 import io.quarkus.picocli.runtime.annotations.TopCommand;
-import picocli.CommandLine;
+import org.mendrugo.lnq.node.NodeCommand;
 import picocli.CommandLine.Command;
 
 import javax.inject.Inject;
 
 @TopCommand
-@Command(mixinStandardHelpOptions = true, subcommands = {HelloCommand.class, GoodByeCommand.class})
+@Command(mixinStandardHelpOptions = true, subcommands = {NodeCommand.class, GoodByeCommand.class})
 public class EntryCommand
 {
 }
