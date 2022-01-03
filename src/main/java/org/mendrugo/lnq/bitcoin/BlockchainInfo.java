@@ -1,5 +1,7 @@
 package org.mendrugo.lnq.bitcoin;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public record BlockchainInfo(
     String id
     , Result result
@@ -7,6 +9,6 @@ public record BlockchainInfo(
 {
     public record Result(
         int blocks
-        , String bestblockhash
+        , @JsonProperty("bestblockhash") String bestBlockHash
     ) {}
 }
