@@ -20,8 +20,13 @@ bd += -regtest
 mvn += JAVA_HOME=$(JAVA_HOME)
 mvn += ./mvnw
 
+ifdef TRACE
+  mvn += -Dquarkus.log.level=TRACE
+  mvn += -Dquarkus.log.min-level=TRACE
+endif
+
 dev:
-> $(mvn) quarkus:dev -Dquarkus.args='n' -Dquarkus.log.level=TRACE -Dquarkus.log.min-level=TRACE
+> $(mvn) quarkus:dev -Dquarkus.args='n'
 .PHONY: dev
 
 mine:
