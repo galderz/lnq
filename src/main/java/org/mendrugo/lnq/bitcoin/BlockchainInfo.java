@@ -1,6 +1,12 @@
 package org.mendrugo.lnq.bitcoin;
 
 public record BlockchainInfo(
-    int blocks
-    , String bestblockhash
-) {}
+    String id
+    , Result result
+)
+{
+    public record Result(
+        int blocks
+        , String bestblockhash
+    ) {}
+}
