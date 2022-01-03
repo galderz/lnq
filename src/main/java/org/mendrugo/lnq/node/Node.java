@@ -1,16 +1,15 @@
 package org.mendrugo.lnq.node;
 
+import io.quarkus.runtime.Quarkus;
+import io.quarkus.runtime.QuarkusApplication;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.mendrugo.lnq.bitcoin.BitcoinClient;
 import org.mendrugo.lnq.bitcoin.BitcoinRequest;
 import org.mendrugo.lnq.effects.Effects;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.function.Consumer;
 
-@ApplicationScoped
-public class Node implements Consumer<NodeArgs>
+public class Node implements QuarkusApplication
 {
     @Inject
     Effects effects;
@@ -20,10 +19,12 @@ public class Node implements Consumer<NodeArgs>
     BitcoinClient bitcoinService;
 
     @Override
-    public void accept(NodeArgs nodeArgs)
+    public int run(String... args)
     {
+        System.out.println("Do startup logic here");
         System.out.println("Time: " + effects.time());
-        System.out.println("Node args: " + nodeArgs);
         System.out.println("Blockchain info: " + bitcoinService.blockchainInfo(BitcoinRequest.getBlockchainInfo()));
+        Quarkus.waitForExit();
+        return 0;
     }
 }

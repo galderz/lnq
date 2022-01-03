@@ -26,7 +26,7 @@ ifdef TRACE
 endif
 
 dev:
-> $(mvn) quarkus:dev -Dquarkus.args='n'
+> $(mvn) clean compile quarkus:dev
 .PHONY: dev
 
 mine:

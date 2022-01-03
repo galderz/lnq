@@ -1,81 +1,56 @@
-# Getting started with Quarkus command mode
+# lnq Project
 
-This is a minimal command mode application that access Quarkus API's.
+This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
-Under the hood, this demo uses:
+If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
 
-- `@QuarkusMain` to enable a custom main class
+## Running the application in dev mode
 
-## Requirements
+You can run your application in dev mode that enables live coding using:
+```shell script
+./mvnw compile quarkus:dev
+```
 
-To compile and run this demo you will need:
+> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
 
-- JDK 11+
-- GraalVM
+## Packaging and running the application
 
-### Configuring GraalVM and JDK 11+
+The application can be packaged using:
+```shell script
+./mvnw package
+```
+It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
+Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
 
-Make sure that both the `GRAALVM_HOME` and `JAVA_HOME` environment variables have
-been set, and that a JDK 11+ `java` command is on the path.
+The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
 
-See the [Building a Native Executable guide](https://quarkus.io/guides/building-native-image-guide)
-for help setting up your environment.
+If you want to build an _über-jar_, execute the following command:
+```shell script
+./mvnw package -Dquarkus.package.type=uber-jar
+```
 
-## Building the application
+The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
 
-Launch the Maven build on the checked out sources of this demo:
+## Creating a native executable
 
-> ./mvnw package
+You can create a native executable using: 
+```shell script
+./mvnw package -Pnative
+```
 
-### Live coding with Quarkus
+Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
+```shell script
+./mvnw package -Pnative -Dquarkus.native.container-build=true
+```
 
-The Maven Quarkus plugin provides a development mode that supports
-live coding. To try this out:
+You can then execute your native executable with: `./target/lnq-1.0.0-SNAPSHOT-runner`
 
-> ./mvnw quarkus:dev
+If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
 
-or
+## Provided Code
 
-> ./mvnw quarkus:dev -Dquarkus.args=<args>
+### RESTEasy JAX-RS
 
-if you want to pass arguments in.
+Easily start your RESTful Web Services
 
-This command will run the command mode application and if you press enter run it again.
- 
-1. Make a change in [src/main/java/org/acme/getting/started/commandmode/GreetingResource.java](src/main/java/org/acme/getting/started/commandmode/GreetingService.java). Replace `hello` with `hello there` in the `greeting()` method.
-    - Press Enter in your terminal. 
-      You should now see `hello there`.
-    - Undo the change, so the method returns `hello` again.
-    - Press Enter again. You should now see `hello`.
-
-### Run Quarkus in JVM mode
-
-When you're done iterating in developer mode, you can run the application as a
-conventional jar file.
-
-First compile it:
-
-> ./mvnw package
-
-Then run it:
-
-> java -jar ./target/quarkus-app/quarkus-run.jar
-
-Have a look at how fast it boots, or measure the total native memory consumption.
-
-### Run Quarkus as a native executable
-
-You can also create a native executable from this application without making any
-source code changes. A native executable removes the dependency on the JVM:
-everything needed to run the application on the target platform is included in
-the executable, allowing the application to run with minimal resource overhead.
-
-Compiling a native executable takes a bit longer, as GraalVM performs additional
-steps to remove unnecessary codepaths. Use the  `native` profile to compile a
-native executable:
-
-> ./mvnw package -Dnative
-
-After getting a cup of coffee, you'll be able to run this executable directly:
-
-> ./target/getting-started-command-mode-1.0.0-SNAPSHOT-runner
+[Related guide section...](https://quarkus.io/guides/getting-started#the-jax-rs-resources)
