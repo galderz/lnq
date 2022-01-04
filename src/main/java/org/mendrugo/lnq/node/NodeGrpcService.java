@@ -22,23 +22,17 @@ import org.mendrugo.lnq.node.proto.PingReply;
 import org.mendrugo.lnq.node.proto.PingRequest;
 import org.mendrugo.lnq.node.proto.Void;
 
-import java.util.function.Supplier;
-
 @GrpcService
 public class NodeGrpcService implements NodeService
 {
     @Override
     public Uni<PingReply> ping(PingRequest request)
     {
-        // TODO add logging
-        System.out.println("ENTER ping");
-
-        final Supplier<PingReply> reply = () ->
+        return Uni.createFrom().item(() ->
             PingReply.newBuilder()
-                .setMessage("Hello " + request.getMessage()).build();
-
-        System.out.println("REPLY ping");
-        return Uni.createFrom().item(reply);
+                .setMessage("Hello " + request.getMessage())
+                .build()
+        );
     }
 
     @Override
