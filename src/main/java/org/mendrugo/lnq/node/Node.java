@@ -23,11 +23,7 @@ public class Node implements QuarkusApplication
     {
         System.out.println("Do startup logic here");
         System.out.println("Time: " + effects.time());
-        // System.out.println("Blockchain info: " + bitcoinService.blockchainInfo(BitcoinRequest.getBlockchainInfo()));
-
-        bitcoinService
-            .blockchainInfo(BitcoinRequest.getBlockchainInfo())
-            .subscribe().with(info -> System.out.println("Blockchain info: " + info));
+        System.out.println("Blockchain info: " + bitcoinService.blockchainInfo(BitcoinRequest.getBlockchainInfo()));
 
         Quarkus.waitForExit();
         return 0;

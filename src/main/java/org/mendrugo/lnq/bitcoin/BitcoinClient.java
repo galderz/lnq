@@ -1,6 +1,5 @@
 package org.mendrugo.lnq.bitcoin;
 
-import io.smallrye.mutiny.Uni;
 import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
@@ -15,7 +14,7 @@ import java.util.Base64;
 public interface BitcoinClient
 {
     @POST
-    Uni<BlockchainInfo> blockchainInfo(BitcoinRequest req);
+    BlockchainInfo blockchainInfo(BitcoinRequest req);
 
     default String lookupAuth()
     {
