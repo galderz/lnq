@@ -28,11 +28,16 @@ public class NodeGrpcService implements NodeService
     @Override
     public Uni<PingReply> ping(PingRequest request)
     {
-        return Uni.createFrom().item(() ->
-            PingReply.newBuilder()
-                .setMessage("Hello " + request.getMessage())
-                .build()
-        );
+        System.out.println("ENTER ping");
+        return Uni.createFrom().item(() -> pingReply(request));
+    }
+
+    private PingReply pingReply(PingRequest request)
+    {
+        System.out.println("REPLY ping");
+        return PingReply.newBuilder()
+            .setMessage("Hello " + request.getMessage())
+            .build();
     }
 
     @Override

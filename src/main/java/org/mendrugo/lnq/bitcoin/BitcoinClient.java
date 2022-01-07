@@ -15,7 +15,10 @@ import java.util.Base64;
 public interface BitcoinClient
 {
     @POST
-    Uni<BlockchainInfo> blockchainInfo(BitcoinRequest req);
+    Uni<BlockchainInfo> getBlockchainInfo(BitcoinRequest req);
+
+    @POST
+    Uni<SendRawTransaction> sendRawTransaction(BitcoinRequest req);
 
     default String lookupAuth()
     {
