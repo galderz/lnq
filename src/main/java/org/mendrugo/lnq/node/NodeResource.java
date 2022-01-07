@@ -12,7 +12,7 @@ public class NodeResource
     public String ping(@PathParam("message") String message)
     {
         System.out.println("ENTER ping");
-        final String reply = "Hello" + message;
+        final String reply = "Hello " + message;
         System.out.println("REPLY ping");
         return reply;
     }

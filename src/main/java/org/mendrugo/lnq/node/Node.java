@@ -1,15 +1,19 @@
 package org.mendrugo.lnq.node;
 
-import io.quarkus.runtime.Quarkus;
-import io.quarkus.runtime.QuarkusApplication;
+import io.quarkus.runtime.StartupEvent;
+import io.quarkus.runtime.annotations.CommandLineArguments;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.mendrugo.lnq.bitcoin.BitcoinClient;
 import org.mendrugo.lnq.bitcoin.BitcoinRequest;
 import org.mendrugo.lnq.effects.Effects;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import java.util.Arrays;
 
-public class Node implements QuarkusApplication
+@ApplicationScoped
+public class Node
 {
     @Inject
     Effects effects;
@@ -18,14 +22,19 @@ public class Node implements QuarkusApplication
     @RestClient
     BitcoinClient bitcoinService;
 
-    @Override
-    public int run(String... args)
-    {
-        System.out.println("Do startup logic here");
-        System.out.println("Time: " + effects.time());
-        System.out.println("Blockchain info: " + bitcoinService.blockchainInfo(BitcoinRequest.getBlockchainInfo()));
+    @Inject
+    @CommandLineArguments
+    String[] args;
 
-        Quarkus.waitForExit();
-        return 0;
+    void onStart(@Observes StartupEvent ev)
+    {
+        System.out.println("Startup Time: " + effects.time());
+        System.out.println("Command line args: " + Arrays.toString(args));
+        setup();
+    }
+
+    private void setup()
+    {
+        System.out.println("Blockchain info: " + bitcoinService.blockchainInfo(BitcoinRequest.getBlockchainInfo()));
     }
 }
