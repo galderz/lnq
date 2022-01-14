@@ -12,6 +12,8 @@ import org.ldk.batteries.ChannelManagerConstructor;
 import org.ldk.enums.ConfirmationTarget;
 import org.ldk.structs.ChannelManager;
 import org.ldk.structs.Event;
+import org.ldk.structs.FeeEstimator;
+import org.ldk.structs.KeysManager;
 import org.ldk.structs.Result_TransactionNoneZ;
 import org.ldk.structs.TxOut;
 import org.mendrugo.lnq.bitcoin.BitcoinClient;
@@ -26,30 +28,29 @@ import java.nio.file.Path;
 import static org.bitcoinj.core.NetworkParameters.ID_REGTEST;
 
 @ApplicationScoped
-public class LnEventHandler implements ChannelManagerConstructor.EventHandler
+public class EventHandler implements ChannelManagerConstructor.EventHandler
 {
     @Inject
     @RestClient
     BitcoinClient bitcoinService;
 
     @Inject
-    LnChannelManagerConstructor channelManagerConstructor;
+    ChannelManagerConstructor channelManagerConstructor;
 
     @Inject
     Effects effects;
 
     @Inject
-    LnFeeEstimator feeEstimator;
+    FeeEstimator feeEstimator;
 
     @Inject
-    LnKeysManager keysManager;
-
-    String refundAddress = "";
+    KeysManager keysManager;
 
     @Override
     public void handle_event(Event e)
     {
-        final ChannelManager channelManager= channelManagerConstructor.constructor.channel_manager;
+        final String refundAddress = "";
+        final ChannelManager channelManager= channelManagerConstructor.channel_manager;
         final var params = NetworkParameters.fromID(ID_REGTEST);
         if (e instanceof Event.FundingGenerationReady event)
         {
@@ -82,7 +83,7 @@ public class LnEventHandler implements ChannelManagerConstructor.EventHandler
         }
         else if (e instanceof Event.SpendableOutputs event)
         {
-            final var tx = keysManager.keysManager.spend_spendable_outputs(
+            final var tx = keysManager.spend_spendable_outputs(
                 event.outputs,
                 new TxOut[]{},
                 Hex.decode(refundAddress),

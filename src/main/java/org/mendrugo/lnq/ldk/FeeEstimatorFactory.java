@@ -3,20 +3,14 @@ package org.mendrugo.lnq.ldk;
 import org.ldk.enums.ConfirmationTarget;
 import org.ldk.structs.FeeEstimator;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 
-@ApplicationScoped
-public class LnFeeEstimator implements FeeEstimator.FeeEstimatorInterface
+public class FeeEstimatorFactory implements FeeEstimator.FeeEstimatorInterface
 {
-    public FeeEstimator feeEstimator;
-
-    @PostConstruct
-    public void onStartup()
+    @Produces
+    FeeEstimator feeEstimator()
     {
-        System.out.println("ENTRY LnFeeEstimator.onStartup");
-        this.feeEstimator = FeeEstimator.new_impl(this);
-        System.out.println("EXIT LnFeeEstimator.onStartup");
+        return FeeEstimator.new_impl(this);
     }
 
     @Override

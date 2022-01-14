@@ -17,10 +17,8 @@ JAVA_HOME = /opt/adopt-17
 print = echo '$(1)'
 comma := ,
 
-ifdef TRACE
-  log_level = trace
-else
-  log_level = info
+ifdef DEBUG
+  log_level = debug
 endif
 
 bc := $(BITCOIN_HOME)/bitcoin-cli
@@ -30,6 +28,8 @@ bd += -regtest
 byteman_jar := $(HOME)/.m2/repository/org/jboss/byteman/byteman/4.0.18/byteman-4.0.18.jar
 java += $(JAVA_HOME)/bin/java
 java += -javaagent:$(byteman_jar)=boot:$(byteman_jar)$(comma)script:$(resources_dir)/$(log_level).btm
+mvn += LD_PRELOAD=/usr/lib64/clang/13/lib/libclang_rt.asan-x86_64.so
+mvn += ASAN_OPTIONS=detect_leaks=0
 mvn += JAVA_HOME=$(JAVA_HOME)
 mvn += ./mvnw
 resources_dir := src/main/resources

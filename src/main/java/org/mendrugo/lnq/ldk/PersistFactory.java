@@ -10,8 +10,7 @@ import org.ldk.structs.Persist.PersistInterface;
 import org.ldk.structs.Result_NoneChannelMonitorUpdateErrZ;
 import org.mendrugo.lnq.effects.Effects;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -20,18 +19,15 @@ import static org.ldk.enums.ChannelMonitorUpdateErr.LDKChannelMonitorUpdateErr_P
 import static org.ldk.structs.Result_NoneChannelMonitorUpdateErrZ.err;
 import static org.ldk.structs.Result_NoneChannelMonitorUpdateErrZ.ok;
 
-@ApplicationScoped
-public class LnPersist implements PersistInterface
+public class PersistFactory implements PersistInterface
 {
-    Persist persist;
-
     @Inject
     Effects effects;
 
-    @PostConstruct
-    void onStart()
+    @Produces
+    Persist persist()
     {
-        this.persist = Persist.new_impl(this);
+        return Persist.new_impl(this);
     }
 
     @Override

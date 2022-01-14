@@ -4,28 +4,23 @@ import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Transaction;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.ldk.structs.BroadcasterInterface;
-import org.ldk.structs.Persist;
 import org.mendrugo.lnq.bitcoin.BitcoinClient;
 import org.mendrugo.lnq.bitcoin.BitcoinRequests;
 import org.mendrugo.lnq.bitcoin.SendRawTransaction;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-@ApplicationScoped
-public class LnBroadcaster implements BroadcasterInterface.BroadcasterInterfaceInterface
+public class BroadcasterFactory implements BroadcasterInterface.BroadcasterInterfaceInterface
 {
     @Inject
     @RestClient
     BitcoinClient bitcoinService;
 
-    BroadcasterInterface broadcaster;
-
-    @PostConstruct
-    void onStart()
+    @Produces
+    BroadcasterInterface broadcaster()
     {
-        this.broadcaster = BroadcasterInterface.new_impl(this);
+        return BroadcasterInterface.new_impl(this);
     }
 
     @Override
