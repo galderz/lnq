@@ -2,10 +2,9 @@ package org.mendrugo.lnq.node;
 
 import io.quarkus.runtime.StartupEvent;
 import io.quarkus.runtime.annotations.CommandLineArguments;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.mendrugo.lnq.bitcoin.BitcoinClient;
-import org.mendrugo.lnq.bitcoin.BitcoinRequest;
 import org.mendrugo.lnq.effects.Effects;
+import org.mendrugo.lnq.ldk.LnFeeEstimator;
+import org.mendrugo.lnq.ldk.LnSyncStartup;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -19,8 +18,10 @@ public class Node
     Effects effects;
 
     @Inject
-    @RestClient
-    BitcoinClient bitcoinService;
+    LnSyncStartup lnSyncStartup;
+
+    @Inject
+    LnFeeEstimator feeEstimator;
 
     @Inject
     @CommandLineArguments
@@ -30,11 +31,7 @@ public class Node
     {
         System.out.println("Startup Time: " + effects.time());
         System.out.println("Command line args: " + Arrays.toString(args));
-        setup();
-    }
-
-    private void setup()
-    {
-        System.out.println("Blockchain info: " + bitcoinService.blockchainInfo(BitcoinRequest.getBlockchainInfo()));
+        // System.out.println("LNQ node sync completed " + lnSyncStartup.completed);
+        System.out.println("LNQ node fee estimator " + feeEstimator);
     }
 }

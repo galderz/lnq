@@ -16,6 +16,12 @@ public interface BitcoinClient
     @POST
     BlockchainInfo blockchainInfo(BitcoinRequest req);
 
+    @POST
+    SendRawTransaction sendRawTransaction(BitcoinRequest req);
+
+    @POST
+    GetRawTransaction getRawTransaction(BitcoinRequest req);
+
     default String lookupAuth()
     {
         return "Basic " + Base64.getEncoder().encodeToString("user:pass".getBytes(StandardCharsets.UTF_8));
