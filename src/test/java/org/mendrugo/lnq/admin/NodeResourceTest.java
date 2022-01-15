@@ -1,4 +1,4 @@
-package org.mendrugo.lnq.node;
+package org.mendrugo.lnq.admin;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;

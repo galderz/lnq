@@ -1,4 +1,4 @@
-package org.mendrugo.lnq.node;
+package org.mendrugo.lnq.admin;
 
 import org.mendrugo.lnq.ldk.Node;
 
@@ -7,9 +7,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
-// TODO rename package and name to admin
 @Path("/node")
-public class NodeResource
+public class AdminResource
 {
     @Inject
     Node node;
