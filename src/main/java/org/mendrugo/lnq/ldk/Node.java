@@ -102,6 +102,11 @@ public class Node
         );
     }
 
+    public String nodeId()
+    {
+        return Hex.toHexString(channelManagerConstructor.channel_manager.get_our_node_id());
+    }
+
     private boolean isConfirmed(byte[] txid)
     {
         return bitcoinService.getRawTransaction(BitcoinRequests.getRawTransaction(txid)).result() != null;
