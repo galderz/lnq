@@ -1,5 +1,6 @@
 package org.mendrugo.lnq.ldk;
 
+import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import io.quarkus.runtime.annotations.CommandLineArguments;
 import org.bouncycastle.util.encoders.Hex;
@@ -101,6 +102,14 @@ public class Node
             , Hex.toHexString(channelManager.get_our_node_id())
             , port
         );
+    }
+
+    void onStop(@Observes ShutdownEvent ev)
+    {
+        System.out.println("Stopping...");
+        final NioPeerHandler peerHandler = channelManagerConstructor.nio_peer_handler;
+        peerHandler.interrupt();
+        System.out.println("Stopped");
     }
 
     public String nodeId()
