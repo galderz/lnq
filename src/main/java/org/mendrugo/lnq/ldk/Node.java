@@ -21,6 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,6 +107,22 @@ public class Node
     {
         return Hex.toHexString(channelManagerConstructor.channel_manager.get_our_node_id());
     }
+
+//    public void connect(byte[] nodeId, String host, int port)
+//    {
+//        try
+//        {
+//            channelManagerConstructor.nio_peer_handler.connect(
+//                nodeId
+//                , new InetSocketAddress(host, port)
+//                , 10000
+//            );
+//        }
+//        catch (IOException e)
+//        {
+//            throw new UncheckedIOException(e);
+//        }
+//    }
 
     private boolean isConfirmed(byte[] txid)
     {
