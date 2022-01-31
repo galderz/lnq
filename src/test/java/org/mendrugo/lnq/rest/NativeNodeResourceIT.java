@@ -1,4 +1,4 @@
-package org.mendrugo.lnq.admin;
+package org.mendrugo.lnq.rest;
 
 import io.quarkus.test.junit.NativeImageTest;
 
