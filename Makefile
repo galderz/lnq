@@ -64,6 +64,18 @@ daemon:
 > $(bd) -daemon -datadir=$(HOME)/.bitcoin
 .PHONY: daemon
 
+# TODO start 2nd node, e.g.
+# cd 1/lnrod/target/debug
+# ./lnrod --regtest --datadir ./data2 --rpcport 8802 --lnport 9902
+
+# TODO add initial verification, e.g. get node info
+# curl -w "\n" http://localhost:8080/node/info
+
+# TODO test peer connect, e.g.target
+# cd 1/lnrod/target/debug
+# node2=`./lnrcli -c http://127.0.0.1:8802 node info | jq -r .node_id` && echo $node2
+# curl -X POST http://localhost:8080/node/peer/connect/03626702c0c117d934888c97de89cd5a3c0fdcfc919ea3cd6a107eca3f30d1a2d5/127.0.0.1/9902
+
 stop:
 > $(bc) stop
 .PHONY: stop
