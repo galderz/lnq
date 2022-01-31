@@ -15,6 +15,7 @@ import org.mendrugo.lnq.bitcoin.BitcoinRequests;
 import org.mendrugo.lnq.bitcoin.BlockchainInfo;
 import org.mendrugo.lnq.effects.Effects;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import java.nio.file.Path;
@@ -46,7 +47,7 @@ public class ChannelManagerConstructorFactory
     @Produces
     ChannelManagerConstructor channelManagerConstructor()
     {
-        System.out.println("LnChannelManagerConstructor.onStart()");
+        System.out.println("ChannelManagerConstructorFactory.channelManagerConstructor()");
         final BlockchainInfo blockchainInfo = bitcoinService.blockchainInfo(BitcoinRequests.getBlockchainInfo());
         final byte[] channelManagerBytes = effects.readAllBytes("manager", Path.of("data"));
         final byte[][] channelMonitors = effects.readDirectory("monitors", Path.of("data"));

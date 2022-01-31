@@ -10,6 +10,7 @@ import org.ldk.structs.Persist.PersistInterface;
 import org.ldk.structs.Result_NoneChannelMonitorUpdateErrZ;
 import org.mendrugo.lnq.effects.Effects;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import java.io.IOException;
@@ -19,6 +20,7 @@ import static org.ldk.enums.ChannelMonitorUpdateErr.LDKChannelMonitorUpdateErr_P
 import static org.ldk.structs.Result_NoneChannelMonitorUpdateErrZ.err;
 import static org.ldk.structs.Result_NoneChannelMonitorUpdateErrZ.ok;
 
+@ApplicationScoped
 public class PersistFactory implements PersistInterface
 {
     @Inject

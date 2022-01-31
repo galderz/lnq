@@ -7,9 +7,11 @@ import org.ldk.structs.Logger;
 import org.ldk.structs.Option_FilterZ;
 import org.ldk.structs.Persist;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+@ApplicationScoped
 public class ChainMonitorFactory
 {
     @Inject

@@ -36,17 +36,17 @@ public class AdminResource
         return nodeId;
     }
 
-//    @POST
-//    @Path("/peer/connect/{nodeId}/{host}/{port}")
-//    public void connect(
-//        @PathParam("nodeId") String nodeId
-//        , @PathParam("host") String host
-//        , @PathParam("port") String port
-//    )
-//    {
-//        // TODO reply with a peer list
-//        System.out.println("ENTER peer connect");
-//        node.connect(Hex.decode(nodeId), host, Integer.parseInt(port));
-//        System.out.println("REPLY peer connect");
-//    }
+    @POST
+    @Path("/peer/connect/{nodeId}/{host}/{port}")
+    public void connect(
+        @PathParam("nodeId") String nodeId
+        , @PathParam("host") String host
+        , @PathParam("port") String port
+    )
+    {
+        // TODO reply with a peer list
+        System.out.println("ENTER peer connect");
+        node.connect(Hex.decode(nodeId), host, Integer.parseInt(port));
+        System.out.println("REPLY peer connect");
+    }
 }

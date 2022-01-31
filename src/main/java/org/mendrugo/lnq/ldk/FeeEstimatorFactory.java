@@ -3,8 +3,10 @@ package org.mendrugo.lnq.ldk;
 import org.ldk.enums.ConfirmationTarget;
 import org.ldk.structs.FeeEstimator;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
+@ApplicationScoped
 public class FeeEstimatorFactory implements FeeEstimator.FeeEstimatorInterface
 {
     @Produces

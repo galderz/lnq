@@ -7,7 +7,6 @@ import org.bitcoinj.core.TransactionInput;
 import org.bitcoinj.core.TransactionWitness;
 import org.bitcoinj.script.Script;
 import org.bouncycastle.util.encoders.Hex;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.ldk.batteries.ChannelManagerConstructor;
 import org.ldk.enums.ConfirmationTarget;
 import org.ldk.structs.ChannelManager;
@@ -20,31 +19,26 @@ import org.mendrugo.lnq.bitcoin.BitcoinClient;
 import org.mendrugo.lnq.bitcoin.BitcoinRequests;
 import org.mendrugo.lnq.effects.Effects;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Path;
 
 import static org.bitcoinj.core.NetworkParameters.ID_REGTEST;
 
-@ApplicationScoped
 public class EventHandler implements ChannelManagerConstructor.EventHandler
 {
-    @Inject
-    @RestClient
-    BitcoinClient bitcoinService;
+    final BitcoinClient bitcoinService;
+    final ChannelManagerConstructor channelManagerConstructor;
+    final Effects effects;
+    final FeeEstimator feeEstimator;
+    final KeysManager keysManager;
 
-    @Inject
-    ChannelManagerConstructor channelManagerConstructor;
-
-    @Inject
-    Effects effects;
-
-    @Inject
-    FeeEstimator feeEstimator;
-
-    @Inject
-    KeysManager keysManager;
+    public EventHandler(BitcoinClient bitcoinService, ChannelManagerConstructor channelManagerConstructor, Effects effects, FeeEstimator feeEstimator, KeysManager keysManager) {
+        this.bitcoinService = bitcoinService;
+        this.channelManagerConstructor = channelManagerConstructor;
+        this.effects = effects;
+        this.feeEstimator = feeEstimator;
+        this.keysManager = keysManager;
+    }
 
     @Override
     public void handle_event(Event e)

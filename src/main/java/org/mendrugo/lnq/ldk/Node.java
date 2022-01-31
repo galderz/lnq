@@ -47,8 +47,8 @@ public class Node
     @Inject
     Effects effects;
 
-    @Inject
-    EventHandler eventHandler;
+//    @Inject
+//    EventHandler eventHandler;
 
     @Inject
     FeeEstimator feeEstimator;
@@ -93,6 +93,7 @@ public class Node
                 chainMonitor.as_Confirm().transaction_unconfirmed(txid);
             });
 
+        final EventHandler eventHandler = new EventHandler(bitcoinService, channelManagerConstructor, effects, feeEstimator, keysManager);
         channelManagerConstructor.chain_sync_completed(eventHandler, null);
 
         final NioPeerHandler peerHandler = channelManagerConstructor.nio_peer_handler;
@@ -117,21 +118,21 @@ public class Node
         return Hex.toHexString(channelManagerConstructor.channel_manager.get_our_node_id());
     }
 
-//    public void connect(byte[] nodeId, String host, int port)
-//    {
-//        try
-//        {
-//            channelManagerConstructor.nio_peer_handler.connect(
-//                nodeId
-//                , new InetSocketAddress(host, port)
-//                , 10000
-//            );
-//        }
-//        catch (IOException e)
-//        {
-//            throw new UncheckedIOException(e);
-//        }
-//    }
+    public void connect(byte[] nodeId, String host, int port)
+    {
+        try
+        {
+            channelManagerConstructor.nio_peer_handler.connect(
+                nodeId
+                , new InetSocketAddress(host, port)
+                , 10000
+            );
+        }
+        catch (IOException e)
+        {
+            throw new UncheckedIOException(e);
+        }
+    }
 
     private boolean isConfirmed(byte[] txid)
     {

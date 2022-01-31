@@ -8,9 +8,11 @@ import org.mendrugo.lnq.bitcoin.BitcoinClient;
 import org.mendrugo.lnq.bitcoin.BitcoinRequests;
 import org.mendrugo.lnq.bitcoin.SendRawTransaction;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+@ApplicationScoped
 public class BroadcasterFactory implements BroadcasterInterface.BroadcasterInterfaceInterface
 {
     @Inject
