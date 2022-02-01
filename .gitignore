@@ -35,4 +35,4 @@ pom.xml.versionsBackup
 release.properties
 
 # LND data folder
-data
+data*
