@@ -13,6 +13,7 @@ endif
 BITCOIN_HOME = /opt/bitcoin/src
 # Release config considerably faster than fastdebug for quarkus dev mode
 JAVA_HOME = /opt/adopt-17
+LNROD_HOME = /opt/lnrod
 
 print = echo '$(1)'
 comma := ,
@@ -64,17 +65,17 @@ daemon:
 > $(bd) -daemon -datadir=$(HOME)/.bitcoin
 .PHONY: daemon
 
-# TODO start 2nd node, e.g.
-# cd 1/lnrod/target/debug
-# ./lnrod --regtest --datadir ./data2 --rpcport 8802 --lnport 9902
+lnrod2:
+> $(LNROD_HOME)/lnrod --regtest --datadir ./data2 --rpcport 8802 --lnport 9902
+.PHONY: lnrod2
 
-# TODO add initial verification, e.g. get node info
-# curl -w "\n" http://localhost:8080/node/info
+info:
+> curl -w "\n" http://localhost:8080/node/info
+.PHONY: info
 
-# TODO test peer connect, e.g.target
-# cd 1/lnrod/target/debug
-# node2=`./lnrcli -c http://127.0.0.1:8802 node info | jq -r .node_id` && echo $node2
-# curl -X POST http://localhost:8080/node/peer/connect/03626702c0c117d934888c97de89cd5a3c0fdcfc919ea3cd6a107eca3f30d1a2d5/127.0.0.1/9902
+connect2:
+> curl -X POST http://localhost:8080/peers/connect/${shell $(LNROD_HOME)/lnrcli -c http://127.0.0.1:8802 node info | jq -r .node_id}/127.0.0.1/9902
+.PHONY: connect2
 
 stop:
 > $(bc) stop
