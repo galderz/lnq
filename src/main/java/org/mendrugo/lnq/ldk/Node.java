@@ -104,8 +104,10 @@ public class Node
     void onStop(@Observes ShutdownEvent ev)
     {
         System.out.println("Stopping...");
-        final NioPeerHandler peerHandler = channelManagerConstructor.nio_peer_handler;
-        peerHandler.interrupt();
+        System.out.println("Disconnecting all peers...");
+        channelManagerConstructor.peer_manager.disconnect_all_peers();
+        System.out.println("Disconnected");
+        channelManagerConstructor.nio_peer_handler.interrupt();
         System.out.println("Stopped");
     }
 
