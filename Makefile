@@ -13,7 +13,7 @@ endif
 BITCOIN_HOME = /opt/bitcoin/src
 # Release config considerably faster than fastdebug for quarkus dev mode
 JAVA_HOME = /opt/adopt-17
-LNROD_HOME = /opt/lnrod
+LR_HOME = /opt/lnrod
 
 print = echo '$(1)'
 comma := ,
@@ -65,17 +65,29 @@ daemon:
 > $(bd) -daemon -datadir=$(HOME)/.bitcoin
 .PHONY: daemon
 
+lnrod1:
+> cd $(LR_HOME)
+> ./lnrod --regtest
+.PHONY: lnrod1
+
 lnrod2:
-> $(LNROD_HOME)/lnrod --regtest --datadir ./data2 --rpcport 8802 --lnport 9902
+> cd $(LR_HOME)
+> ./lnrod --regtest --datadir ./data2 --rpcport 8802 --lnport 9902
 .PHONY: lnrod2
+
+test: info connect peers
 
 info:
 > curl -w "\n" http://localhost:8080/node/info
 .PHONY: info
 
-connect2:
-> curl -X POST http://localhost:8080/peers/connect/${shell $(LNROD_HOME)/lnrcli -c http://127.0.0.1:8802 node info | jq -r .node_id}/127.0.0.1/9902
-.PHONY: connect2
+connect:
+> curl -X POST http://localhost:8080/peers/connect/${shell $(LR_HOME)/lnrcli -c http://127.0.0.1:8802 node info | jq -r .node_id}/127.0.0.1/9902
+.PHONY: connect
+
+peers:
+> curl -w "\n" http://localhost:8080/peers
+.PHONY: peers
 
 stop:
 > $(bc) stop
