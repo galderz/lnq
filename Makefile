@@ -101,8 +101,8 @@ stop:
 # It Requires cbindgen, e.g.
 # $ cargo install cbindgen
 
-LDK_BIND_GC_HOME := /opt/ldk-garbagecollected
 LDK_BIND_C_HOME := /opt/ldk-c-bindings
+LDK_BIND_GC_HOME := /opt/ldk-garbagecollected
 RUST_LN_HOME := /opt/matt-rust-lightning
 
 LDK_BRANCH ?= v0.0.104.1
@@ -110,17 +110,17 @@ BINDINGS_BRANCH ?= 2021-03-java-bindings-base
 
 ldk_jni_so = $(LDK_GC_HOME)/liblightningjni.so
 
-$(LDK_GC_HOME):
-> cd /opt
-> git clone https://github.com/lightningdevkit/ldk-garbagecollected
-
-$(RUST_LDK):
-> cd /opt
-> git clone https://git.bitcoin.ninja/rust-lightning matt-rust-lightning
-
 $(LDK_BIND_C_HOME):
 > cd /opt
 > git clone https://github.com/lightningdevkit/ldk-c-bindings
+
+$(LDK_BIND_GC_HOME):
+> cd /opt
+> git clone https://github.com/lightningdevkit/ldk-garbagecollected
+
+$(RUST_LN_HOME):
+> cd /opt
+> git clone https://git.bitcoin.ninja/rust-lightning matt-rust-lightning
 
 update-bindings: update-rust-ln update-ldk-bind-c update-ldk-bind-gc build-bindings
 .PHONY: update-bindings
@@ -132,6 +132,7 @@ build-ldk-bind-gc:
 > cd $(LDK_BIND_GC_HOME)
 > PATH=$(JAVA_HOME)/bin:$(PATH) ./genbindings.sh $(LDK_BIND_C_HOME) "-I/opt/java-11/include/ -I/opt/java-11/include/linux/" true false
 > $(mvn) -DskipTests install
+> ln -s liblightningjni_debug_x86_64-redhat-linux-gnu.so liblightningjni.so
 .PHONY: build-ldk-bind-gc
 
 build-ldk-bind-c:
@@ -157,7 +158,7 @@ update-ldk-bind-gc: $(LDK_BIND_GC_HOME)
 > git checkout $(LDK_BRANCH)
 .PHONY: update-ldk-bind-gc
 
-reset:
+reset-bindings:
 > cd $(LDK_BIND_C_HOME)
 > git checkout -f
 > git reset --hard HEAD
@@ -166,7 +167,17 @@ reset:
 > git checkout -f
 > git reset --hard HEAD
 > git clean -f -d
-.PHONY: reset
+> cd $(RUST_LN_HOME)
+> git checkout -f
+> git reset --hard HEAD
+> git clean -f -d
+.PHONY: reset-bindings
+
+clean-bindings:
+> rm -drf $(LDK_BIND_C_HOME)
+> rm -drf $(LDK_BIND_GC_HOME)
+> rm -drf $(RUST_LN_HOME)
+.PHONY: clean-bindings
 
 get-ldk-jars:
 > scp -r $(REMOTE):.m2/repository/org/lightningdevkit $(HOME)/.m2/repository/org
