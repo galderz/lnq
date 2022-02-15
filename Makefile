@@ -43,7 +43,8 @@ ifdef TRACE
 endif
 
 dev:
-> $(mvn) clean compile quarkus:dev
+> rm -drf data
+> $(mvn) --batch-mode clean compile quarkus:dev -Dquarkus.console.color=false
 .PHONY: dev
 
 run:
@@ -67,11 +68,13 @@ daemon:
 
 lnrod1:
 > cd $(LR_HOME)
+> rm -drf data
 > ./lnrod --regtest
 .PHONY: lnrod1
 
 lnrod2:
 > cd $(LR_HOME)
+> rm -drf data2
 > ./lnrod --regtest --datadir ./data2 --rpcport 8802 --lnport 9902
 .PHONY: lnrod2
 
