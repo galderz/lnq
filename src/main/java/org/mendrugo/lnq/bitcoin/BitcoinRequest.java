@@ -7,5 +7,4 @@ public record BitcoinRequest(
     , String id
     , String method
     , List<String> params
-)
-{}
+) {}
