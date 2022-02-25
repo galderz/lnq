@@ -44,7 +44,7 @@ endif
 
 dev:
 > rm -drf data
-> $(mvn) --batch-mode clean compile quarkus:dev -Dquarkus.console.color=false
+> $(mvn) --batch-mode clean compile quarkus:dev -Dquarkus.console.color=false -DdebugHost=0.0.0.0
 .PHONY: dev
 
 run:
@@ -108,7 +108,8 @@ LDK_BIND_C_HOME := /opt/ldk-c-bindings
 LDK_BIND_GC_HOME := /opt/ldk-garbagecollected
 RUST_LN_HOME := /opt/matt-rust-lightning
 
-LDK_BRANCH ?= v0.0.104.1
+LDK_C_BRANCH ?= 0.0.104
+LDK_GC_BRANCH ?= main
 BINDINGS_BRANCH ?= 2021-03-java-bindings-base
 
 ldk_jni_so = $(LDK_GC_HOME)/liblightningjni.so
@@ -152,13 +153,13 @@ update-rust-ln: $(RUST_LN_HOME)
 update-ldk-bind-c: $(LDK_BIND_C_HOME)
 > cd $(LDK_BIND_C_HOME)
 > git fetch --all --tags -f
-> git checkout $(LDK_BRANCH)
+> git checkout origin/$(LDK_C_BRANCH)
 .PHONY: update-ldk-bind-c
 
 update-ldk-bind-gc: $(LDK_BIND_GC_HOME)
 > cd $(LDK_BIND_GC_HOME)
 > git fetch --all --tags -f
-> git checkout $(LDK_BRANCH)
+> git checkout origin/$(LDK_GC_BRANCH)
 .PHONY: update-ldk-bind-gc
 
 reset-bindings:

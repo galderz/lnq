@@ -17,15 +17,19 @@ import org.ldk.structs.Persist;
 import org.mendrugo.lnq.bitcoin.BitcoinClient;
 import org.mendrugo.lnq.bitcoin.BitcoinRequests;
 import org.mendrugo.lnq.effects.Effects;
+import org.mendrugo.lnq.rest.PeerResource;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @ApplicationScoped
 public class Node
@@ -62,18 +66,21 @@ public class Node
     @CommandLineArguments
     String[] args;
 
+    @Inject
+    org.jboss.logging.Logger jbossLog;
+
     void onStart(@Observes StartupEvent ev) throws IOException
     {
-        System.out.println("Startup Time: " + effects.time());
-        System.out.println("Command line args: " + Arrays.toString(args));
+        jbossLog.infof("Startup Time: %s", effects.time());
+        jbossLog.infof("Command line args: %s", Arrays.toString(args));
 
-        System.out.println("LNQ node fee estimator: " + feeEstimator);
-        System.out.println("LNQ node logger: " + logger);
-        System.out.println("LNQ node broadcaster: " + broadcaster);
-        System.out.println("LNQ node persist: " + persist);
-        System.out.println("LNQ node chain monitor: " + chainMonitor);
-        System.out.println("LNQ node keys manager: " + keysManager);
-        System.out.println("LNQ node channel manager constructor: " + channelManagerConstructor);
+        jbossLog.infof("LNQ node fee estimator: %s", feeEstimator);
+        jbossLog.infof("LNQ node logger: %s", logger);
+        jbossLog.infof("LNQ node broadcaster: %s", broadcaster);
+        jbossLog.infof("LNQ node persist: %s", persist);
+        jbossLog.infof("LNQ node chain monitor: %s", chainMonitor);
+        jbossLog.infof("LNQ node keys manager: %s", keysManager);
+        jbossLog.infof("LNQ node channel manager constructor: %s", channelManagerConstructor);
         System.out.println("LNQ node channel manager: " + channelManagerConstructor.channel_manager);
 
         final ChannelManager channelManager = channelManagerConstructor.channel_manager;
@@ -104,6 +111,7 @@ public class Node
     void onStop(@Observes ShutdownEvent ev)
     {
         System.out.println("Stopping...");
+        //System.out.println("Before stoppping, peers are: " + PeerResource.peers(channelManagerConstructor.peer_manager));
         channelManagerConstructor.nio_peer_handler.interrupt();
         System.out.println("Stopped");
     }
@@ -116,5 +124,32 @@ public class Node
     private boolean isConfirmed(byte[] txid)
     {
         return bitcoinService.getRawTransaction(BitcoinRequests.getRawTransaction(txid)).result() != null;
+    }
+
+    public void connect(byte[] nodeId, String host, int port)
+    {
+        try
+        {
+            channelManagerConstructor.nio_peer_handler.connect(
+                nodeId
+                , new InetSocketAddress(host, port)
+                , 10000
+            );
+        }
+        catch (IOException e)
+        {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public Set<Peer> peers()
+    {
+        // System.out.println("Get peers from " + peerManager);
+        final Set<Peer> peers = new HashSet<>();
+        for (byte[] peerIdBytes : channelManagerConstructor.peer_manager.get_peer_node_ids())
+        {
+            peers.add(new Peer(Hex.toHexString(peerIdBytes)));
+        }
+        return peers;
     }
 }

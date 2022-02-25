@@ -10,7 +10,7 @@ import javax.inject.Inject;
 public class LoggerFactory implements org.ldk.structs.Logger.LoggerInterface
 {
     @Inject
-    org.jboss.logging.Logger log;
+    org.jboss.logging.Logger jbossLog;
 
     @Produces
     org.ldk.structs.Logger logger()
@@ -21,7 +21,7 @@ public class LoggerFactory implements org.ldk.structs.Logger.LoggerInterface
     @Override
     public void log(Record record)
     {
-        log.infof(
+        jbossLog.infof(
             "[%s] %s"
             , record.get_level()
             , record.get_args()
