@@ -44,11 +44,15 @@ public class ChannelManagerConstructorFactory
     @Inject
     Logger logger;
 
+    @Inject
+    org.jboss.logging.Logger jbossLog;
+
     @Produces
     ChannelManagerConstructor channelManagerConstructor()
     {
-        System.out.println("ChannelManagerConstructorFactory.channelManagerConstructor()");
         final BlockchainInfo blockchainInfo = bitcoinService.blockchainInfo(BitcoinRequests.getBlockchainInfo());
+        jbossLog.infof("Blockchain height is %d", blockchainInfo.result().blocks());
+
         final byte[] channelManagerBytes = effects.readAllBytes("manager", Path.of("data"));
         final byte[][] channelMonitors = effects.readDirectory("monitors", Path.of("data"));
         if (channelManagerBytes.length == 0)

@@ -28,16 +28,8 @@ public class BroadcasterFactory implements BroadcasterInterface.BroadcasterInter
     @Override
     public void broadcast_transaction(byte[] txBytes)
     {
-        broadcastTx(new Transaction(NetworkParameters.fromID(NetworkParameters.ID_REGTEST), txBytes));
-    }
-
-    private void broadcastTx(Transaction tx)
-    {
-        System.out.printf("before broadcast txid %s%n", tx.getTxId());
-        final SendRawTransaction sendRawTransaction = bitcoinService
-            .sendRawTransaction(
-                BitcoinRequests.sendRawTransaction(tx.bitcoinSerialize())
-            );
-        System.out.printf("broadcast %s%n", sendRawTransaction.result().txId());
+        System.out.println("before broadcast...");
+        final SendRawTransaction result = bitcoinService.sendRawTransaction(BitcoinRequests.sendRawTransaction(txBytes));
+        System.out.printf("broadcast %s%n", result.result().txId());
     }
 }

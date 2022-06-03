@@ -78,19 +78,21 @@ lnrod2:
 > ./lnrod --regtest --datadir ./data2 --rpcport 8802 --lnport 9902
 .PHONY: lnrod2
 
-test: info connect peers
-
 info:
 > curl -w "\n" http://localhost:8080/node/info
 .PHONY: info
 
-connect:
+connect: info
 > curl -X POST http://localhost:8080/peers/connect/${shell $(LR_HOME)/lnrcli -c http://127.0.0.1:8802 node info | jq -r .node_id}/127.0.0.1/9902
 .PHONY: connect
 
 peers:
 > curl -w "\n" http://localhost:8080/peers
 .PHONY: peers
+
+channel: peers
+> curl -v -X POST http://localhost:8080/channels/new/${shell $(LR_HOME)/lnrcli -c http://127.0.0.1:8802 node info | jq -r .node_id}/1000000
+.PHONY: channel
 
 stop:
 > $(bc) stop
