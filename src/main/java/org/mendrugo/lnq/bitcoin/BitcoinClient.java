@@ -17,6 +17,9 @@ public interface BitcoinClient
     BlockchainInfo blockchainInfo(BitcoinRequest req);
 
     @POST
+    CreateRawTransaction createRawTransaction(BitcoinRequest req);
+
+    @POST
     SendRawTransaction sendRawTransaction(BitcoinRequest req);
 
     @POST

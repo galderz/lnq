@@ -6,6 +6,7 @@ import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionInput;
 import org.bitcoinj.core.TransactionWitness;
 import org.bitcoinj.script.Script;
+import org.bitcoinj.script.ScriptPattern;
 import org.bouncycastle.util.encoders.Hex;
 import org.ldk.batteries.ChannelManagerConstructor;
 import org.ldk.enums.ConfirmationTarget;
@@ -43,11 +44,23 @@ public class EventHandler implements ChannelManagerConstructor.EventHandler
     @Override
     public void handle_event(Event e)
     {
+        System.out.println("Handle event: " + e);
         final String refundAddress = "";
         final ChannelManager channelManager= channelManagerConstructor.channel_manager;
         final var params = NetworkParameters.fromID(ID_REGTEST);
         if (e instanceof Event.FundingGenerationReady event)
         {
+//            final var script = new Script(event.output_script);
+//            if(!ScriptPattern.isP2WH(script))
+//            {
+//                System.out.println("ERROR: Lightning funding tx should always be a SegWit output");
+//                return;
+//            }
+//
+//            final var transaction = new Transaction(params);
+//            final var value = Coin.SATOSHI.multiply(event.channel_value_satoshis);
+//            transaction.addOutput(value, script);
+
             final var transaction = new Transaction(params);
             final var input = new TransactionInput(params, transaction, new byte[0]);
             input.setWitness(new TransactionWitness(2));
