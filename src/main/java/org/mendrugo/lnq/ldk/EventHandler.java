@@ -102,4 +102,17 @@ public class EventHandler implements ChannelManagerConstructor.EventHandler
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void persist_network_graph(byte[] bytes)
+    {
+        try
+        {
+            effects.persist(bytes, Path.of("network"), Path.of("data"));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
 }
