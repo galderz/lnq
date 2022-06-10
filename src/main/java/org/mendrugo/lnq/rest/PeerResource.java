@@ -28,6 +28,9 @@ public class PeerResource
 
     // TODO switch to JSON object, see https://quarkus.io/guides/rest-json
     //      Then to curl it use https://reqbin.com/req/c-dwjszac0/curl-post-json-example
+
+    // TODO use resteasy PathParam instead
+    // TODO change port to int?
     @POST
     @Path("/connect/{nodeId}/{host}/{port}")
     public void connect(
