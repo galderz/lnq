@@ -13,7 +13,7 @@ endif
 BITCOIN_HOME = /opt/bitcoin/src
 # Release config considerably faster than fastdebug for quarkus dev mode
 JAVA_HOME = /opt/adopt-17
-LR_HOME = /opt/lnrod
+LR_HOME = /opt/lnrod/target/debug
 
 print = echo '$(1)'
 comma := ,
@@ -25,7 +25,6 @@ comma := ,
 bc := $(BITCOIN_HOME)/bitcoin-cli
 bc += -regtest
 bd += $(BITCOIN_HOME)/bitcoind
-bd += -regtest
 #byteman_jar := $(HOME)/.m2/repository/org/jboss/byteman/byteman/4.0.18/byteman-4.0.18.jar
 java += $(JAVA_HOME)/bin/java
 #java += -javaagent:$(byteman_jar)=boot:$(byteman_jar)$(comma)script:$(resources_dir)/$(log_level).btm
@@ -56,14 +55,11 @@ jar:
 .PHONY: jar
 
 mine:
-> $(bc) createwallet default || true
-> $(bc) unloadwallet default
-> $(bc) loadwallet default true
-> $(bc) generatetoaddress 101 $(shell $(bc) getnewaddress)
+> ./mine.sh
 .PHONY: mine
 
 daemon:
-> $(bd) -daemon -datadir=$(HOME)/.bitcoin
+> $(bd) -regtest -daemon
 .PHONY: daemon
 
 lnrod1:
@@ -78,13 +74,11 @@ lnrod2:
 > ./lnrod --regtest --datadir ./data2 --rpcport 8802 --lnport 9902
 .PHONY: lnrod2
 
-test: info connect peers
-
 info:
 > curl -w "\n" http://localhost:8080/node/info
 .PHONY: info
 
-connect:
+connect: info
 > curl -X POST http://localhost:8080/peers/connect/${shell $(LR_HOME)/lnrcli -c http://127.0.0.1:8802 node info | jq -r .node_id}/127.0.0.1/9902
 .PHONY: connect
 
