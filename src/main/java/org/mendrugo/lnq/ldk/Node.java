@@ -14,6 +14,7 @@ import org.ldk.structs.FeeEstimator;
 import org.ldk.structs.KeysManager;
 import org.ldk.structs.Logger;
 import org.ldk.structs.Persist;
+import org.ldk.structs.Result__u832APIErrorZ;
 import org.mendrugo.lnq.bitcoin.BitcoinClient;
 import org.mendrugo.lnq.bitcoin.BitcoinRequests;
 import org.mendrugo.lnq.effects.Effects;
@@ -96,7 +97,7 @@ public class Node
                 chainMonitor.as_Confirm().transaction_unconfirmed(txid);
             });
 
-        final EventHandler eventHandler = new EventHandler(bitcoinService, channelManagerConstructor, effects, feeEstimator, keysManager);
+        final EventHandler eventHandler = new EventHandler(bitcoinService, channelManagerConstructor, effects, feeEstimator, keysManager, jbossLog);
         channelManagerConstructor.chain_sync_completed(eventHandler, null);
 
         final NioPeerHandler peerHandler = channelManagerConstructor.nio_peer_handler;
@@ -151,5 +152,13 @@ public class Node
             peers.add(new Peer(Hex.toHexString(peerIdBytes)));
         }
         return peers;
+    }
+
+    public void channelNew(byte[] nodeId, long value)
+    {
+        final ChannelManager channelManager = channelManagerConstructor.channel_manager;
+        final Result__u832APIErrorZ result = channelManager.create_channel(nodeId, value, 0, 0, null);
+        if (!result.is_ok())
+            throw new RuntimeException("Unable to create new channel");
     }
 }

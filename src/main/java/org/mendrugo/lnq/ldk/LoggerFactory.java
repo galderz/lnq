@@ -21,10 +21,38 @@ public class LoggerFactory implements org.ldk.structs.Logger.LoggerInterface
     @Override
     public void log(Record record)
     {
-        jbossLog.infof(
-            "[%s] %s"
-            , record.get_level()
-            , record.get_args()
-        );
+        switch (record.get_level())
+        {
+            case LDKLevel_Debug ->
+                jbossLog.debugf(
+                    "[%s] %s"
+                    , record.get_level()
+                    , record.get_args()
+                );
+            case LDKLevel_Error ->
+                jbossLog.errorf(
+                    "[%s] %s"
+                    , record.get_level()
+                    , record.get_args()
+                );
+            case LDKLevel_Info ->
+                jbossLog.infof(
+                    "[%s] %s"
+                    , record.get_level()
+                    , record.get_args()
+                );
+            case LDKLevel_Trace ->
+                jbossLog.tracef(
+                    "[%s] %s"
+                    , record.get_level()
+                    , record.get_args()
+                );
+            case LDKLevel_Warn ->
+                jbossLog.warnf(
+                    "[%s] %s"
+                    , record.get_level()
+                    , record.get_args()
+                );
+        }
     }
 }

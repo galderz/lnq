@@ -1,6 +1,7 @@
 package org.mendrugo.lnq.bitcoin;
 
 import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
+import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import javax.ws.rs.POST;
@@ -11,16 +12,23 @@ import java.util.Base64;
 @Path("/")
 @RegisterRestClient(configKey = "bitcoind")
 @ClientHeaderParam(name = "Authorization", value = "{lookupAuth}")
+@RegisterProvider(BitcoinResponseExceptionMapper.class)
 public interface BitcoinClient
 {
     @POST
-    BlockchainInfo blockchainInfo(BitcoinRequest req);
+    BlockchainInfo blockchainInfo(BitcoinRequests.StringParams req);
 
     @POST
-    SendRawTransaction sendRawTransaction(BitcoinRequest req);
+    FundRawTransaction.Response fundRawTransaction(FundRawTransaction.Request req);
 
     @POST
-    GetRawTransaction getRawTransaction(BitcoinRequest req);
+    GetRawTransaction getRawTransaction(BitcoinRequests.StringParams req);
+
+    @POST
+    SendRawTransaction.Response sendRawTransaction(SendRawTransaction.Request req);
+
+    @POST
+    SignRawTransactionWithWallet signRawTransactionWithWallet(BitcoinRequest req);
 
     default String lookupAuth()
     {

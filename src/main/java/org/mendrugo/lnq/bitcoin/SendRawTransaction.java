@@ -2,7 +2,17 @@ package org.mendrugo.lnq.bitcoin;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record SendRawTransaction(String id, Result result)
+import java.util.List;
+
+public final class SendRawTransaction
 {
-    public record Result(@JsonProperty("hex") String txId) {}
+    record Request(
+        String jsonrpc
+        , String id
+        , String method
+        , List<String> params
+    ) {}
+
+    public record Response(String id, @JsonProperty("result") String tx) {}
 }
+

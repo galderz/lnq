@@ -1,14 +1,35 @@
 package org.mendrugo.lnq.bitcoin;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.util.List;
 
 public class BitcoinRequests
 {
-    public static BitcoinRequest getRawTransaction(byte[] txid)
+    public static FundRawTransaction.Request fundRawTransaction(byte[] tx, int feeRate)
     {
-        return new BitcoinRequest(
+        ObjectMapper mapper = new ObjectMapper();
+        final ObjectNode objectNode = mapper.createObjectNode();
+        objectNode.put("fee_rate", feeRate);
+        objectNode.put("replaceable", false);
+
+        return new FundRawTransaction.Request(
+            "1.0"
+            , "curltest"
+            , "fundrawtransaction"
+            , List.of(
+                TextNode.valueOf(Hex.toHexString(tx))
+                , objectNode
+            )
+        );
+    }
+
+    public static StringParams getRawTransaction(byte[] txid)
+    {
+        return new StringParams(
             "1.0"
             , "curltest"
             , "sendrawtransaction"
@@ -16,9 +37,9 @@ public class BitcoinRequests
         );
     }
 
-    public static BitcoinRequest sendRawTransaction(byte[] tx)
+    public static SendRawTransaction.Request sendRawTransaction(byte[] tx)
     {
-        return new BitcoinRequest(
+        return new SendRawTransaction.Request(
             "1.0"
             , "curltest"
             , "sendrawtransaction"
@@ -26,9 +47,19 @@ public class BitcoinRequests
         );
     }
 
-    public static BitcoinRequest getBlockchainInfo()
+    public static BitcoinRequest signRawTransactionWithWallet(String tx)
     {
         return new BitcoinRequest(
+            "1.0"
+            , "curltest"
+            , "signrawtransactionwithwallet"
+            , List.of(tx)
+        );
+    }
+
+    public static StringParams getBlockchainInfo()
+    {
+        return new StringParams(
             "1.0"
             , "curltest"
             , "getblockchaininfo"
@@ -45,6 +76,22 @@ public class BitcoinRequests
         }
         return output;
     }
+
+    public record StringParams(
+        String jsonrpc
+        , String id
+        , String method
+        , List<String> params
+    ) {}
+
+    public record OutputParams(
+        String jsonrpc
+        , String id
+        , String method
+        , List<List<Output>> params
+    ) {}
+
+    record Output(String data) {}
 
     private BitcoinRequests() {}
 }

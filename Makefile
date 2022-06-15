@@ -12,7 +12,7 @@ endif
 
 BITCOIN_HOME = /opt/bitcoin/src
 # Release config considerably faster than fastdebug for quarkus dev mode
-JAVA_HOME = /opt/adopt-17
+JAVA_HOME = /opt/java-17
 LR_HOME = /opt/lnrod/target/debug
 
 print = echo '$(1)'
@@ -85,6 +85,10 @@ connect: info
 peers:
 > curl -w "\n" http://localhost:8080/peers
 .PHONY: peers
+
+channel: peers
+> curl -v -X POST http://localhost:8080/channels/new/${shell $(LR_HOME)/lnrcli -c http://127.0.0.1:8802 node info | jq -r .node_id}/1000000
+.PHONY: channel
 
 stop:
 > $(bc) stop

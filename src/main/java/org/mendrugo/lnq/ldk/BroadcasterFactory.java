@@ -34,10 +34,10 @@ public class BroadcasterFactory implements BroadcasterInterface.BroadcasterInter
     private void broadcastTx(Transaction tx)
     {
         System.out.printf("before broadcast txid %s%n", tx.getTxId());
-        final SendRawTransaction sendRawTransaction = bitcoinService
+        final SendRawTransaction.Response sendRawTransaction = bitcoinService
             .sendRawTransaction(
                 BitcoinRequests.sendRawTransaction(tx.bitcoinSerialize())
             );
-        System.out.printf("broadcast %s%n", sendRawTransaction.result().txId());
+        System.out.printf("broadcast %s%n", sendRawTransaction.tx());
     }
 }
