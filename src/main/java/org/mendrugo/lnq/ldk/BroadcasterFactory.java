@@ -19,6 +19,9 @@ public class BroadcasterFactory implements BroadcasterInterface.BroadcasterInter
     @RestClient
     BitcoinClient bitcoinService;
 
+    @Inject
+    org.jboss.logging.Logger jbossLog;
+
     @Produces
     BroadcasterInterface broadcaster()
     {
@@ -33,11 +36,12 @@ public class BroadcasterFactory implements BroadcasterInterface.BroadcasterInter
 
     private void broadcastTx(Transaction tx)
     {
-        System.out.printf("before broadcast txid %s%n", tx.getTxId());
+        jbossLog.infof("Before broadcast txid %s%n", tx.getTxId());
+        jbossLog.debugf("Before broadcast tx %s", tx);
         final SendRawTransaction.Response sendRawTransaction = bitcoinService
             .sendRawTransaction(
                 BitcoinRequests.sendRawTransaction(tx.bitcoinSerialize())
             );
-        System.out.printf("broadcast %s%n", sendRawTransaction.tx());
+        jbossLog.infof("Broadcast %s%n", sendRawTransaction.txId());
     }
 }

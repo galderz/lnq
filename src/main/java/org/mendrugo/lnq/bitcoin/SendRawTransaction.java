@@ -13,6 +13,6 @@ public final class SendRawTransaction
         , List<String> params
     ) {}
 
-    public record Response(String id, @JsonProperty("result") String tx) {}
+    public record Response(String id, @JsonProperty("result") String txId) {}
 }
 
