@@ -16,19 +16,19 @@ import java.util.Base64;
 public interface BitcoinClient
 {
     @POST
-    BlockchainInfo blockchainInfo(BitcoinRequests.StringParams req);
-
-    @POST
     FundRawTransaction.Response fundRawTransaction(FundRawTransaction.Request req);
 
     @POST
-    GetRawTransaction getRawTransaction(BitcoinRequests.StringParams req);
+    GetBlockchainInfo.Response getBlockchainInfo(GetBlockchainInfo.Request req);
+
+    @POST
+    GetRawTransaction.Response getRawTransaction(GetRawTransaction.Request req);
 
     @POST
     SendRawTransaction.Response sendRawTransaction(SendRawTransaction.Request req);
 
     @POST
-    SignRawTransactionWithWallet signRawTransactionWithWallet(BitcoinRequest req);
+    SignRawTransactionWithWallet.Response signRawTransactionWithWallet(SignRawTransactionWithWallet.Request req);
 
     default String lookupAuth()
     {

@@ -4,7 +4,6 @@ import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import io.quarkus.runtime.annotations.CommandLineArguments;
 import org.bouncycastle.util.encoders.Hex;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.ldk.batteries.ChannelManagerConstructor;
 import org.ldk.batteries.NioPeerHandler;
 import org.ldk.structs.BroadcasterInterface;
@@ -15,10 +14,8 @@ import org.ldk.structs.KeysManager;
 import org.ldk.structs.Logger;
 import org.ldk.structs.Persist;
 import org.ldk.structs.Result__u832APIErrorZ;
-import org.mendrugo.lnq.bitcoin.BitcoinClient;
-import org.mendrugo.lnq.bitcoin.BitcoinRequests;
+import org.mendrugo.lnq.bitcoin.BitcoinService;
 import org.mendrugo.lnq.effects.Effects;
-import org.mendrugo.lnq.rest.PeerResource;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -36,8 +33,7 @@ import java.util.Set;
 public class Node
 {
     @Inject
-    @RestClient
-    BitcoinClient bitcoinService;
+    BitcoinService bitcoinService;
 
     @Inject
     BroadcasterInterface broadcaster;
@@ -122,9 +118,9 @@ public class Node
         return Hex.toHexString(channelManagerConstructor.channel_manager.get_our_node_id());
     }
 
-    private boolean isConfirmed(byte[] txid)
+    private boolean isConfirmed(byte[] txId)
     {
-        return bitcoinService.getRawTransaction(BitcoinRequests.getRawTransaction(txid)).result() != null;
+        return bitcoinService.getRawTransaction(txId) != null;
     }
 
     public void connect(byte[] nodeId, String host, int port)

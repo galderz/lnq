@@ -2,7 +2,15 @@ package org.mendrugo.lnq.bitcoin;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record GetRawTransaction(String id, Result result)
+import java.util.List;
+
+final class GetRawTransaction
 {
-    public record Result(@JsonProperty("hex") String txId) {}
+    record Request(String jsonrpc, String id, String method, List<String> params) {}
+
+    public record Response(String id, Result result)
+    {
+        record Result(@JsonProperty("hex") String tx) {}
+    }
 }
+

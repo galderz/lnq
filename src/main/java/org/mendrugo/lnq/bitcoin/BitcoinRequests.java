@@ -7,6 +7,7 @@ import org.bouncycastle.util.encoders.Hex;
 
 import java.util.List;
 
+// TODO need this? it could be all in BitcoinService
 public class BitcoinRequests
 {
     public static FundRawTransaction.Request fundRawTransaction(byte[] tx, int feeRate)
@@ -27,29 +28,29 @@ public class BitcoinRequests
         );
     }
 
-    public static StringParams getRawTransaction(byte[] txid)
+    public static GetRawTransaction.Request getRawTransaction(byte[] txid)
     {
-        return new StringParams(
+        return new GetRawTransaction.Request(
             "1.0"
             , "curltest"
-            , "sendrawtransaction"
+            , "getrawtransaction"
             , List.of(Hex.toHexString(reverse(txid)), "true")
         );
     }
 
-    public static SendRawTransaction.Request sendRawTransaction(byte[] tx)
+    public static SendRawTransaction.Request sendRawTransaction(byte[] rawTx)
     {
         return new SendRawTransaction.Request(
             "1.0"
             , "curltest"
             , "sendrawtransaction"
-            , List.of(Hex.toHexString(tx))
+            , List.of(Hex.toHexString(rawTx))
         );
     }
 
-    public static BitcoinRequest signRawTransactionWithWallet(String tx)
+    public static SignRawTransactionWithWallet.Request signRawTransactionWithWallet(String tx)
     {
-        return new BitcoinRequest(
+        return new SignRawTransactionWithWallet.Request(
             "1.0"
             , "curltest"
             , "signrawtransactionwithwallet"
@@ -57,9 +58,9 @@ public class BitcoinRequests
         );
     }
 
-    public static StringParams getBlockchainInfo()
+    public static GetBlockchainInfo.Request getBlockchainInfo()
     {
-        return new StringParams(
+        return new GetBlockchainInfo.Request(
             "1.0"
             , "curltest"
             , "getblockchaininfo"
@@ -76,22 +77,6 @@ public class BitcoinRequests
         }
         return output;
     }
-
-    public record StringParams(
-        String jsonrpc
-        , String id
-        , String method
-        , List<String> params
-    ) {}
-
-    public record OutputParams(
-        String jsonrpc
-        , String id
-        , String method
-        , List<List<Output>> params
-    ) {}
-
-    record Output(String data) {}
 
     private BitcoinRequests() {}
 }

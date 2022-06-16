@@ -10,12 +10,10 @@ import org.ldk.structs.FeeEstimator;
 import org.ldk.structs.KeysManager;
 import org.ldk.structs.Logger;
 import org.ldk.structs.UserConfig;
-import org.mendrugo.lnq.bitcoin.BitcoinClient;
-import org.mendrugo.lnq.bitcoin.BitcoinRequests;
+import org.mendrugo.lnq.bitcoin.BitcoinService;
 import org.mendrugo.lnq.bitcoin.BlockchainInfo;
 import org.mendrugo.lnq.effects.Effects;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import java.nio.file.Path;
@@ -23,8 +21,7 @@ import java.nio.file.Path;
 public class ChannelManagerConstructorFactory
 {
     @Inject
-    @RestClient
-    BitcoinClient bitcoinService;
+    BitcoinService bitcoinService;
 
     @Inject
     BroadcasterInterface broadcaster;
@@ -48,7 +45,7 @@ public class ChannelManagerConstructorFactory
     ChannelManagerConstructor channelManagerConstructor()
     {
         System.out.println("ChannelManagerConstructorFactory.channelManagerConstructor()");
-        final BlockchainInfo blockchainInfo = bitcoinService.blockchainInfo(BitcoinRequests.getBlockchainInfo());
+        final BlockchainInfo blockchainInfo = bitcoinService.getBlockchainInfo();
         final byte[] channelManagerBytes = effects.readAllBytes("manager", Path.of("data"));
         final byte[][] channelMonitors = effects.readDirectory("monitors", Path.of("data"));
         if (channelManagerBytes.length == 0)
@@ -56,8 +53,8 @@ public class ChannelManagerConstructorFactory
             return new ChannelManagerConstructor(
                 Network.LDKNetwork_Regtest
                 , UserConfig.with_default()
-                , Hex.decode(blockchainInfo.result().bestBlockHash())
-                , blockchainInfo.result().blocks()
+                , Hex.decode(blockchainInfo.bestBlockHash())
+                , blockchainInfo.blocks()
                 , keysManager.as_KeysInterface()
                 , feeEstimator
                 , chainMonitor

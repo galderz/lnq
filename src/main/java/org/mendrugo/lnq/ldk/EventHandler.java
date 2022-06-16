@@ -3,7 +3,6 @@ package org.mendrugo.lnq.ldk;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.TransactionWitness;
 import org.bitcoinj.script.Script;
 import org.bouncycastle.util.encoders.Hex;
 import org.jboss.logging.Logger;
@@ -17,10 +16,7 @@ import org.ldk.structs.KeysManager;
 import org.ldk.structs.Result_NoneAPIErrorZ;
 import org.ldk.structs.Result_TransactionNoneZ;
 import org.ldk.structs.TxOut;
-import org.mendrugo.lnq.bitcoin.BitcoinClient;
-import org.mendrugo.lnq.bitcoin.BitcoinRequests;
-import org.mendrugo.lnq.bitcoin.FundRawTransaction;
-import org.mendrugo.lnq.bitcoin.SignRawTransactionWithWallet;
+import org.mendrugo.lnq.bitcoin.BitcoinService;
 import org.mendrugo.lnq.effects.Effects;
 
 import java.io.IOException;
@@ -30,7 +26,7 @@ import static org.bitcoinj.core.NetworkParameters.ID_REGTEST;
 
 public class EventHandler implements ChannelManagerConstructor.EventHandler
 {
-    final BitcoinClient bitcoinService;
+    final BitcoinService bitcoinService;
     final ChannelManagerConstructor channelManagerConstructor;
     final Effects effects;
     final FeeEstimator feeEstimator;
@@ -38,7 +34,7 @@ public class EventHandler implements ChannelManagerConstructor.EventHandler
     final ClassLoader tccl;
     final Logger jbossLog;
 
-    public EventHandler(BitcoinClient bitcoinService, ChannelManagerConstructor channelManagerConstructor, Effects effects, FeeEstimator feeEstimator, KeysManager keysManager, Logger jbossLog) {
+    public EventHandler(BitcoinService bitcoinService, ChannelManagerConstructor channelManagerConstructor, Effects effects, FeeEstimator feeEstimator, KeysManager keysManager, Logger jbossLog) {
         this.bitcoinService = bitcoinService;
         this.channelManagerConstructor = channelManagerConstructor;
         this.effects = effects;
@@ -66,21 +62,15 @@ public class EventHandler implements ChannelManagerConstructor.EventHandler
             final Coin value = Coin.SATOSHI.multiply(event.channel_value_satoshis);
             transaction.addOutput(value, script);
 
-//            final CreateRawTransaction rawTx = bitcoinService.createRawTransaction(BitcoinRequests.createRawTransaction(transaction.bitcoinSerialize()));
-
-            // Have your wallet put the inputs into the transaction
+            // Have your wallet put the inputs into the transaction,
             // such that the output is satisfied.
             int feeRate = getEstimatedSatPer100Weight(ConfirmationTarget.LDKConfirmationTarget_Normal) / 250;
-            final FundRawTransaction.Response fundedTx = bitcoinService.fundRawTransaction(BitcoinRequests.fundRawTransaction(transaction.bitcoinSerialize(), feeRate));
+            final String fundedTx = bitcoinService.fundRawTransaction(transaction.bitcoinSerialize(), feeRate);
 
             // Sign the final funding transaction and broadcast it.
-            final SignRawTransactionWithWallet signedTx = bitcoinService.signRawTransactionWithWallet(BitcoinRequests.signRawTransactionWithWallet(fundedTx.result().tx()));
-            if (!signedTx.result().complete()) {
-                System.out.println("ERROR: Transaction signatures not complete");
-                return;
-            }
+            final String signedTx = bitcoinService.signRawTransactionWithWallet(fundedTx);
 
-            final Result_NoneAPIErrorZ result = channelManager.funding_transaction_generated(event.temporary_channel_id, Hex.decode(signedTx.result().tx()));
+            final Result_NoneAPIErrorZ result = channelManager.funding_transaction_generated(event.temporary_channel_id, Hex.decode(signedTx));
             if (!result.is_ok())
             {
                 final Result_NoneAPIErrorZ.Result_NoneAPIErrorZ_Err error = (Result_NoneAPIErrorZ.Result_NoneAPIErrorZ_Err) result;
@@ -89,7 +79,6 @@ public class EventHandler implements ChannelManagerConstructor.EventHandler
                 } else {
                     System.out.println("ERROR: Unable to fund channel. Error is: " + error.err);
                 }
-                return;
             }
         }
         else if (e instanceof Event.PaymentReceived event)
@@ -119,7 +108,7 @@ public class EventHandler implements ChannelManagerConstructor.EventHandler
             );
             if (tx instanceof Result_TransactionNoneZ.Result_TransactionNoneZ_OK)
             {
-                bitcoinService.sendRawTransaction(BitcoinRequests.sendRawTransaction(((Result_TransactionNoneZ.Result_TransactionNoneZ_OK) tx).res));
+                bitcoinService.sendRawTransaction(((Result_TransactionNoneZ.Result_TransactionNoneZ_OK) tx).res);
             }
         }
     }

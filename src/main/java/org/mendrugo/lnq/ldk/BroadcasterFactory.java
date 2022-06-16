@@ -2,11 +2,8 @@ package org.mendrugo.lnq.ldk;
 
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Transaction;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.ldk.structs.BroadcasterInterface;
-import org.mendrugo.lnq.bitcoin.BitcoinClient;
-import org.mendrugo.lnq.bitcoin.BitcoinRequests;
-import org.mendrugo.lnq.bitcoin.SendRawTransaction;
+import org.mendrugo.lnq.bitcoin.BitcoinService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -16,8 +13,7 @@ import javax.inject.Inject;
 public class BroadcasterFactory implements BroadcasterInterface.BroadcasterInterfaceInterface
 {
     @Inject
-    @RestClient
-    BitcoinClient bitcoinService;
+    BitcoinService bitcoinService;
 
     @Inject
     org.jboss.logging.Logger jbossLog;
@@ -37,11 +33,8 @@ public class BroadcasterFactory implements BroadcasterInterface.BroadcasterInter
     private void broadcastTx(Transaction tx)
     {
         jbossLog.infof("Before broadcast txid %s%n", tx.getTxId());
-        jbossLog.debugf("Before broadcast tx %s", tx);
-        final SendRawTransaction.Response sendRawTransaction = bitcoinService
-            .sendRawTransaction(
-                BitcoinRequests.sendRawTransaction(tx.bitcoinSerialize())
-            );
-        jbossLog.infof("Broadcast %s%n", sendRawTransaction.txId());
+        jbossLog.debugf("Before broadcast rawTx %s", tx);
+        final String txId = bitcoinService.sendRawTransaction(tx.bitcoinSerialize());
+        jbossLog.infof("Broadcast %s%n", txId);
     }
 }
