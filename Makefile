@@ -58,10 +58,6 @@ mine:
 > ./mine.sh
 .PHONY: mine
 
-daemon:
-> $(bd) -regtest -daemon
-.PHONY: daemon
-
 lnrod1:
 > cd $(LR_HOME)
 > rm -drf data
