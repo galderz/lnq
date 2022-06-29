@@ -32,6 +32,6 @@ public interface BitcoinClient
 
     default String lookupAuth()
     {
-        return "Basic " + Base64.getEncoder().encodeToString("user:pass".getBytes(StandardCharsets.UTF_8));
+        return "Basic " + Base64.getEncoder().encodeToString("foo:qDDZdeQ5vw9XXFeVnXT4PZ--tGN2xNjjR4nrtyszZx0=".getBytes(StandardCharsets.UTF_8));
     }
 }
